@@ -30,18 +30,38 @@ async function main() {
   }
   let url = endpoint.publicURL;
   console.log(endpoint, token);
-  let query = "/metrics/search?query=rackspace.monitoring.entities.*.byte*";
 
-  let results = await fetch("/proxy/" + url + query, {
+  let opts = {
     mode: "cors",
     method: "GET",
     headers: {
       "Accept": "application/json",
       "X-Auth-Token": token
     }
-  }).then(res => res.json());
+  };
 
-  console.log(results);
+
+  let name = "rackspace.monitoring.entities.en4PbkCx7B.checks.remote.http.chVsFUAGMr.mzord.bytes";
+
+  // let query = "/metrics/search?query=rackspace.monitoring.entities.*.byte*";
+  //
+  //
+  // let results = await fetch("/proxy/" + url + query, opts)
+  //   .then(res => res.json());
+  //
+  // console.log(results);
+  //
+  // let name = results[3].metric;
+
+  let extra = "?from=" + (Date.now() - 1000*60*60*24*7) +
+              "&to=" + Date.now() +
+              "&points=168";
+
+  let data = await fetch("/proxy/" + url + "/views/" + name + extra, opts)
+    .then(res => res.json());
+
+  console.log(data);
+
 
 }
 
