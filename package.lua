@@ -8,9 +8,10 @@ return {
     'creationix/weblit-etag-cache',
     'creationix/weblit-static',
     'creationix/coro-http',
-    "luvit/pretty-print",
+    'luvit/pretty-print',
+    'luvit/secure-socket',
   },
   luvi = {
-    flavor = "tiny"
+    flavor = 'regular'
   }
 }

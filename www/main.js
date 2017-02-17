@@ -7,7 +7,7 @@ async function main() {
   let {username, apiKey} = await fetch("/config.json").then(res => res.json());
 
   // Load service catalog from identity.
-  let {access} = await fetch(identityEntrypoint, {
+  let {access} = await fetch("/proxy/" + identityEntrypoint, {
     mode: "cors",
     method: "POST",
     headers: {"Content-Type": "application/json"},
@@ -32,7 +32,7 @@ async function main() {
   console.log(endpoint, token);
   let query = "/metrics/search?query=rackspace.monitoring.entities.*.byte*";
 
-  await fetch("/proxy/" + url + query, {
+  let results = await fetch("/proxy/" + url + query, {
     mode: "cors",
     method: "GET",
     headers: {
@@ -40,6 +40,8 @@ async function main() {
       "X-Auth-Token": token
     }
   }).then(res => res.json());
+
+  console.log(results);
 
 }
 

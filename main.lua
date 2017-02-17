@@ -7,7 +7,7 @@ local env = require('env')
 local username = assert(env.get 'RAX_USERNAME', 'Missing RAX_USERNAME environment variable')
 local apiKey = assert(env.get 'RAX_API_KEY', 'Missing RAX_API_KEY environment variable')
 local p = require('pretty-print').prettyPrint
-
+local request = require('coro-http').request
 require('weblit-app')
 
 .bind({
@@ -29,13 +29,19 @@ require('weblit-app')
   res.body = '{"username":"' .. username .. '","apiKey":"' .. apiKey .. '"}\n'
 end)
 
---- proxy for identity calls
-
--- proxy for metrics calls
+-- proxy for identity and metrics calls
 .route({
-  path = "/proxy/*"
+  path = "/proxy/:url:"
 }, function (req, res, go)
-  p(req)
+  local rres, body = request(req.method, req.path:match("/proxy/(.*)"), req.headers, req.body)
+  res.code = rres.code
+  for i = 1, #rres do
+    local pair = rres[i]
+    res.headers[pair[1]] = pair[2]
+  end
+  if body then
+    res.body = body
+  end
 end)
 
 .use(require('weblit-static')('bundle:www'))
