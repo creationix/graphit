@@ -6,6 +6,7 @@ async function main() {
   // Load username and api key from local server
   let {username, apiKey} = await fetch("/config.json").then(res => res.json());
 
+  document.querySelector("#username-menu").textContent = `Account: ${username}`;
   // Load service catalog from identity.
   let {access} = await fetch("/proxy/" + identityEntrypoint, {
     mode: "cors",
